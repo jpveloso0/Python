@@ -80,6 +80,23 @@ def salvarMedico(nomeMedico, endMedico, espMedico, codigoMedico):
     chaveMedico = codigoMedico
     dic[chaveMedico] = tuplaMedico
     print(dic)
+    salvarArquivoMedico(dic)
+
+def salvarArquivoMedico(dic):
+    with open('medicos.txt', 'w') as arq:
+        listConteudo = list(dic.values())
+        cont = 0
+        for codigo in dic:
+            arq.write(str(codigo))
+            arq.write('\n')
+            arq.write(str(listConteudo[cont][0]))
+            arq.write('\n')
+            arq.write(str(listConteudo[cont][1]))
+            arq.write('\n')
+            arq.write(str(listConteudo[cont][2]))
+            arq.write('\n')
+            cont+=1
+
 
 
 
