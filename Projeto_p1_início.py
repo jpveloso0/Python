@@ -52,7 +52,7 @@ def cdtPaciente():
     salvarPaciente(nomePaciente, cpfPaciente, endPaciente)
     escolhaLoginPaciente()
 
-def salvarPaciente(nome, cpf, end):
+def salvarPaciente(nomePaciente, cpfPaciente, endPaciente):
     tuplaPaciente = (nomePaciente, endPaciente)
     dic = {}
     chavePaciente = cpfPaciente
@@ -74,6 +74,22 @@ def salvarArquivoPaciente():
             arq.write('\n')
             cont+=1
 
+
+def carregarPacientes():
+    dicPaciente = {}
+    with open('paciente.txt', 'r') as arq:
+        listaArqPaciente = arq.readlines()
+        qntPacientes = len(listaArqPaciente)//3
+        cont = 0
+        while cont < qntPacientes:
+            nomePaciente = tiraBarraEne(listaArqPaciente[4*cont])
+            endPaciente = tiraBarraEne(listaArqPaciente[4*cont+1])
+            cpfPaciente = tiraBarraEne(listaArqPaciente[4*cont+2])
+            cont+=1
+            tuplaPaciente = (nomePaciente, endPaciente)
+            chavePaciente = cpfPaciente
+            dicPaciente[chavePaciente] = tuplaPaciente
+    return dicPaciente
 
 
 def escolhaLoginPaciente():
