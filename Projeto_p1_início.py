@@ -49,6 +49,44 @@ def cdtPaciente():
     endPaciente = input("\nDigite seu endereço: ")
     senhaPaciente = input("\nDigite sua senha para login: ")
 
+    salvarPaciente(nomePaciente, cpfPaciente, endPaciente)
+    escolhaLoginPaciente()
+
+def salvarPaciente(nome, cpf, end):
+    tuplaPaciente = (nomePaciente, endPaciente)
+    dic = {}
+    chavePaciente = cpfPaciente
+    dic[chavePaciente] = tuplaPaciente
+    print(dic)
+    salvarArquivoPaciente(dic)
+
+
+def salvarArquivoPaciente():
+    with open('paciente.txt','w') as arq:
+        listaConteudo = list(dic.values())
+        cont = 0
+        for codigo in dic:
+            arq.write(str(codigo))
+            arq.write('\n')
+            arq.write(str(listConteudo[cont][0]))
+            arq.write('\n')
+            arq.write(str(listConteudo[cont][1]))
+            arq.write('\n')
+            cont+=1
+
+
+
+def escolhaLoginPaciente():
+    print("\nDeseja entrar no menu de login? (1- sim, 2- continuar no cadastro, 3- página inicial) \n")
+    resp = int(input(""))
+    if resp == 1:
+        menuLogin()
+    elif resp == 2:
+        pInicial()
+    elif resp == 3:
+        cdtPaciente()
+    else:
+        print("\nOpção digitada inválida!")
 
 def cdtMedico():
     print("->"*20 + "\nSeja bem vindo (a) a área para cadastro de médicos\n" + "<-"*20)
@@ -59,19 +97,20 @@ def cdtMedico():
     senhaMedico = input("\nDigite sua senha: \n")
 
     salvarMedico(nomeMedico, endMedico, espMedico, codigoMedico)
-    escolhaLogin()
+    escolhaLoginMedico()
 
 
-def escolhaLogin():
-    print("\nDeseja entrar no menu de login? (1- sim, 2- não) \n")
+def escolhaLoginMedico():
+    print("\nDeseja entrar no menu de login? (1- sim, 2- continuar no cadastro, 3- página inicial) \n")
     resp = int(input(""))
     if resp == 1:
         menuLogin()
     elif resp == 2:
         pInicial()
+    elif resp == 3:
+        cdtMedico()
     else:
-        print("\nOpção digitada incorreta.")
-    pass
+        print("\nOpção digitada inválida!")
 
 
 def salvarMedico(nomeMedico, endMedico, espMedico, codigoMedico):
@@ -99,10 +138,28 @@ def salvarArquivoMedico(dic):
 
 
 
+def carregarMedicos():
+    dicMedico = {}
+    with open('medicos.txt', 'r') as arq:
+        listaArqMedico = arq.readlines()
+        qntMedicos = len(listaArqMedico)//4
+        cont = 0
+        while cont < qntMedicos:
+            codigoMedico = tiraBarraEne(listaArqMedico[4*cont])
+            nomeMedico = tiraBarraEne(listaArqMedico[4*cont+1])
+            endMedico = tiraBarraEne(listaArqMedico[4*cont+2])
+            espMedico = tiraBarraEne(listaArqMedico[4*cont+3])
+            cont+=1
+            tuplaMedico = (nomeMedico, endMedico, espMedico)
+            chaveMedico = codigoMedico
+            dicMedico[chaveMedico] = tuplaMedico
+
+    return dicMedico 
+
+
 
 def cnsPontos ():
     print("\nBem vindo a área para consulta de planos!")
 
-
-
+ 
 pInicial()
