@@ -16,30 +16,48 @@ def dataHora():
 
 def pInicial():
     from sys import exit
-    print(
-        "->" * 20 + "\nOlá, seja bem vindo ao nosso fórum. Aqui você encontra diversos médicos especialistas em diversas regiões.\n" + "<-" * 20)
-    print("1- Cadastro paciente")
-    print("2- Cadastro médico")
-    print("3- Consulta número de pontos")
-    print("4- Sair")
+    cont = True
+    while cont:
+        print(
+            "->" * 20 + "\nOlá, seja bem vindo ao nosso fórum. Aqui você encontra diversos médicos especialistas em diversas regiões.\n" + "<-" * 20)
+        print("1- Cadastro paciente")
+        print("2- Cadastro médico")
+        print("3- Consulta número de pontos")
+        print("4- Login Paciente")
+        print("5- Login Médico")
+        print("6- Sair")
 
-    try:
-        op = int(input("\nEscolha a opção desejada: "))
+        try:
+            op = int(input("\nEscolha a opção desejada: "))
 
-        if op == 1:
-            cdtPaciente()
+            if op == 1:
+                cont = False
+                cdtPaciente()
 
-        if op == 2:
-            cdtMedico()
+            elif op == 2:
+                cont = False
+                cdtMedico()
 
-        if op == 3:
-            cnsPontos()
+            elif op == 3:
+                cont = False
+                cnsPontos()
+                
 
-        if op == 4:
-            sys.exit()
+            elif op == 4:
+                cont = False
+                menuLoginPaciente(dicPaciente)
+                
 
-    except:
-        print("\nOpção digitada incorreta! Tente novamente...")
+            elif op == 5:
+                cont = False
+                menuLoginMedico(dicMedico)
+                
+
+            elif op == 6:
+                sys.exit()
+
+        except:  
+                print("\nOpção digitada incorreta. Tente novamente")
 
 
 def cdtPaciente():
@@ -49,11 +67,11 @@ def cdtPaciente():
     endPaciente = input("\nDigite seu endereço: ")
     senhaPaciente = input("\nDigite sua senha para login: ")
 
-    salvarPaciente(nomePaciente, cpfPaciente, endPaciente)
+    salvarPaciente(nomePaciente, cpfPaciente, endPaciente, senhaPaciente)
     escolhaLoginPaciente()
 
-def salvarPaciente(nomePaciente, cpfPaciente, endPaciente):
-    tuplaPaciente = (nomePaciente, endPaciente)
+def salvarPaciente(nomePaciente, cpfPaciente, endPaciente, senhaPaciente):
+    tuplaPaciente = (nomePaciente, endPaciente, senhaPaciente)
     dic = {}
     chavePaciente = cpfPaciente
     dic[chavePaciente] = tuplaPaciente
@@ -61,9 +79,9 @@ def salvarPaciente(nomePaciente, cpfPaciente, endPaciente):
     salvarArquivoPaciente(dic)
 
 
-def salvarArquivoPaciente():
+def salvarArquivoPaciente(dic):
     with open('paciente.txt','w') as arq:
-        listaConteudo = list(dic.values())
+        listConteudo = list(dic.values())
         cont = 0
         for codigo in dic:
             arq.write(str(codigo))
@@ -71,6 +89,8 @@ def salvarArquivoPaciente():
             arq.write(str(listConteudo[cont][0]))
             arq.write('\n')
             arq.write(str(listConteudo[cont][1]))
+            arq.write('\n')
+            arq.write(str(listConteudo[cont][2]))
             arq.write('\n')
             cont+=1
 
@@ -85,18 +105,19 @@ def carregarPacientes():
             nomePaciente = tiraBarraEne(listaArqPaciente[4*cont])
             endPaciente = tiraBarraEne(listaArqPaciente[4*cont+1])
             cpfPaciente = tiraBarraEne(listaArqPaciente[4*cont+2])
+            senhaPaciente = tiraBarraEne(listaArqPaciente[4*cont+3])
             cont+=1
-            tuplaPaciente = (nomePaciente, endPaciente)
+            tuplaPaciente = (nomePaciente, endPaciente, senhaPaciente)
             chavePaciente = cpfPaciente
             dicPaciente[chavePaciente] = tuplaPaciente
     return dicPaciente
 
 
 def escolhaLoginPaciente():
-    print("\nDeseja entrar no menu de login? (1- sim, 2- continuar no cadastro, 3- página inicial) \n")
+    print("\nDeseja entrar no menu de login? (1- sim, 2- continuar no cadastro, 3- página inicial)")
     resp = int(input(""))
     if resp == 1:
-        menuLogin()
+        menuLoginPaciente(dicPaciente)
     elif resp == 2:
         pInicial()
     elif resp == 3:
@@ -112,7 +133,7 @@ def cdtMedico():
     codigoMedico = input("\nDigite o seu código de identificação: (lembre-se, o código de identificação serve para acessar seus dados no sistema)\n")
     senhaMedico = input("\nDigite sua senha: \n")
 
-    salvarMedico(nomeMedico, endMedico, espMedico, codigoMedico)
+    salvarMedico(nomeMedico, endMedico, espMedico, codigoMedico, senhaMedico)
     escolhaLoginMedico()
 
 
@@ -120,7 +141,7 @@ def escolhaLoginMedico():
     print("\nDeseja entrar no menu de login? (1- sim, 2- continuar no cadastro, 3- página inicial) \n")
     resp = int(input(""))
     if resp == 1:
-        menuLogin()
+        menuLoginMedico()
     elif resp == 2:
         pInicial()
     elif resp == 3:
@@ -129,13 +150,14 @@ def escolhaLoginMedico():
         print("\nOpção digitada inválida!")
 
 
-def salvarMedico(nomeMedico, endMedico, espMedico, codigoMedico):
-    tuplaMedico = (nomeMedico, endMedico, espMedico)
+def salvarMedico(nomeMedico, endMedico, espMedico, codigoMedico, senhaMedico):
+    tuplaMedico = (nomeMedico, endMedico, espMedico, senhaMedico)
     dic = {}
     chaveMedico = codigoMedico
     dic[chaveMedico] = tuplaMedico
     print(dic)
     salvarArquivoMedico(dic)
+    return dic
 
 def salvarArquivoMedico(dic):
     with open('medicos.txt', 'w') as arq:
@@ -165,6 +187,7 @@ def carregarMedicos():
             nomeMedico = tiraBarraEne(listaArqMedico[4*cont+1])
             endMedico = tiraBarraEne(listaArqMedico[4*cont+2])
             espMedico = tiraBarraEne(listaArqMedico[4*cont+3])
+            senhaMedico = tiraBarraEne(listaArqMedico[4*cont+4])
             cont+=1
             tuplaMedico = (nomeMedico, endMedico, espMedico)
             chaveMedico = codigoMedico
@@ -177,5 +200,34 @@ def carregarMedicos():
 def cnsPontos ():
     print("\nBem vindo a área para consulta de planos!")
 
+
+def menuLoginPaciente(dicPaciente):
+    cont = True
+    while cont:
+        print("->"*20+"\nBem vindo a área de login..."+"<-"*20)
+        idLogin = input("\nDigite seu login(CPF): \n")
+        senhaLogin = input("Digite sua senha: \n")
+
+        if idLogin == dicPaciente[cpfPaciente]:
+            if senhaLogin == dicPaciente[cpfPaciente][2]:
+                print(f"\nBem vindo {dicPaciente[cpf][0]}")
+                cont = False
+
+            elif not senhaLogin:
+                print("\nCampo digitado em brando. Tente novamente")
+
+            else:
+                print("\nLogin não encontrado")
+            
+
+        elif not idLogin:
+            print("\nCampo digitado em branco. Tente novamente")
+
+        else:
+            print("\nLogin não encontrado")
+
+    
+    
+dicPaciente = carregarPacientes()
  
 pInicial()
