@@ -44,12 +44,12 @@ def pInicial():
 
         elif op == 4:
             cont = False
-            menuLoginPaciente(dicPaciente)
+            menuLoginPaciente()
                 
 
         elif op == 5:
             cont = False
-            menuLoginMedico(dicMedico)
+            menuLoginMedico()
                 
 
         elif op == 6:
@@ -173,6 +173,8 @@ def salvarArquivoMedico(dic):
         arq.write('\n')
         arq.write(str(listConteudo[cont][2]))
         arq.write('\n')
+        arq.write(str(listConteudo[cont][3]))
+        arq.write('\n')
         cont+=1
     arq.close()
 
@@ -181,7 +183,7 @@ def carregarMedicos():
     dicMedico = {}
     with open('medicos.txt', 'r') as arq:
         listaArqMedico = arq.readlines()
-        qntMedicos = len(listaArqMedico)//4
+        qntMedicos = len(listaArqMedico)//5
         cont = 0
         while cont < qntMedicos:
             codigoMedico = tiraBarraEne(listaArqMedico[4*cont])
@@ -198,12 +200,83 @@ def carregarMedicos():
 
 
 
+def menuLoginMedico():
+    cont = True
+    usuario = ''
+    while cont:
+        print("->"*20+"\nBem vindo a área de login..."+"<-"*20)
+        opcao = True
+        cont = False
+        while opcao:
+            resp = int(input("\n1- Logar, 2- Sair: \n"))
+            if resp == 1:
+                idLoginMed = input("\nDigite seu login(o código): \n")
+                senhaLoginMed = input("\nDigite sua senha: \n")
+                if idLoginMed in dicMedico:
+                    if dicMedico[idLoginMed][3] == senhaLoginMed:
+                        usuario = dicMedico[idLoginMed][0]
+                        print(f"\nBem vindo, {usuario}")
+                        menuMedico(usuario, idLoginMed)
+
+                    elif not senhaLoginMed:
+                        print("\nA senha não pode estar em branco. Tente novamente")
+
+                    else:
+                        print("\nSenha inválida. Tente novamente")
+
+                elif not idLoginMed:
+                    print("\nO código não pode estar em branco. Tente novamente")
+
+                else:
+                    print("\nCódigo inválido. Tente novamente")
+
+            elif resp == 2:
+                opcao = False
+
+    return usuario
+
+
+def menuMedico(usuario, idLoginMed):
+    codigo = idLoginMed
+    cont = True
+    while cont:
+        print(f"\nOpções disponíveis, {usuario}")
+        print(f"\n1- Atualizar dados")
+        print("\n2- Ver feed de comentários")
+        print("\n3- Excluir cadastro")
+        print("\n4- Sair")
+        op = int(input("\nEscolha uma opção: \n"))
+
+        if not op:
+            print("\nUma opção deve ser digitada")
+
+        elif op == 1:
+            atualizarDadosMedico()
+            cont = False
+
+        elif op == 2:
+            feed()
+            cont = False
+
+        elif op == 3:
+            excluirMedico()
+
+        elif op == 4:
+            cont = False
+
+        else:
+            print("\nOpção digitada incorreta. Tente novamente")
+        
+
+
 def cnsPontos ():
     print("\nBem vindo a área para consulta de planos!")
 
 
-def menuLoginPaciente(dicPaciente):
+
+def menuLoginPaciente():
     cont = True
+    usuario = ''
     while cont:
         print("->"*20+"\nBem vindo a área de login..."+"<-"*20)
         opcao = True
@@ -217,9 +290,10 @@ def menuLoginPaciente(dicPaciente):
                     
                 if (idLogin in dicPaciente):
                     if (dicPaciente[idLogin][2] == senhaLogin):
+                        usuario = dicPaciente[idLogin][0]
                         print(f"\nBem vindo, {dicPaciente[idLogin][0]}")
-                        menuPaciente()
-                        opcap = False 
+                        menuPaciente(usuario, idLogin)
+                        opcao = False 
 
                     elif not senhaLogin:
                         print("\nEspaço de senha digitado em branco. Tente novamente!")
@@ -235,13 +309,16 @@ def menuLoginPaciente(dicPaciente):
 
             elif resp == 2:
                 opcao = False
+    return usuario
 
             
 
-def menuPaciente():
+def menuPaciente(usuario, idLogin):
+    usuario = usuario
+    cpf = idLogin
     cont = True
     while cont:
-        print("\nOpções disponíveis: ")
+        print(f"\nOpções disponíveis, {usuario}: ")
         print("\n1- Atualizar dados")
         print("\n2- Pesquisar médicos")
         print("\n3- Comentar sobre algum médico ")
@@ -254,7 +331,7 @@ def menuPaciente():
 
         elif op == 1:
             cont = False
-            atualizarDadosPaciente()
+            atualizarDadosPaciente(usuario, cpf)
 
         elif op == 2:
             cont = False
@@ -275,6 +352,8 @@ def menuPaciente():
             print("\nOpção digitada incorreta. Tente novamente!")
             
         
+    
+    
 
 
 
@@ -288,7 +367,7 @@ def menuPaciente():
 
 
     
-    
+dicMedico = carregarMedicos()   
 dicPaciente = carregarPacientes()
  
 pInicial()
