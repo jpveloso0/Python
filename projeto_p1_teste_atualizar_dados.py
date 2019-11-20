@@ -26,7 +26,7 @@ def criptografar(dado):
 
     return resultado
 
-def decriptografar(dado):
+def descriptografar(dado):
 
     arq = open('chavePublica.txt', 'r')
     d = int(tiraBarraEne(arq.readline()))
@@ -99,12 +99,13 @@ def cdtPaciente():
     cpfPaciente = input("\nDigite seu cpf: ")
     endPaciente = input("\nDigite seu endereço: ")
     senhaPaciente = input("\nDigite sua senha para login: ")
-
-    salvarPaciente(nomePaciente, cpfPaciente, endPaciente, senhaPaciente)
+    dataCadastro = dataHora()
+    dataModificacao = "-"
+    salvarPaciente(nomePaciente, cpfPaciente, endPaciente, senhaPaciente, dataCadastro, dataModificacao)
     escolhaLoginPaciente()
 
-def salvarPaciente(nomePaciente, cpfPaciente, endPaciente, senhaPaciente):
-    tuplaPaciente = (nomePaciente, endPaciente, senhaPaciente)
+def salvarPaciente(nomePaciente, cpfPaciente, endPaciente, senhaPaciente, dataCadastro, dataModificacao):
+    tuplaPaciente = (nomePaciente, endPaciente, senhaPaciente, dataCadastro, dataModificacao)
     chavePaciente = cpfPaciente
     dicPaciente[chavePaciente] = tuplaPaciente
     print(dicPaciente)
@@ -124,6 +125,10 @@ def salvarArquivoPaciente(dicPaciente):
         arq.write('\n')
         arq.write(criptografar(str(listConteudo[cont][2])))
         arq.write('\n')
+        arq.write(criptografar(str(listConteudo[cont][3])))
+        arq.write('\n')
+        arq.write(criptografar(str(listConteudo[cont][4])))
+        arq.write('\n')
         cont+=1
     arq.close()
 
@@ -133,15 +138,17 @@ def carregarPacientes():
     with open('paciente.txt', 'r') as arq:
         
         listaArqPaciente = arq.readlines()
-        qntPacientes = len(listaArqPaciente)//4
+        qntPacientes = len(listaArqPaciente)//6
         cont = 0
         while cont < qntPacientes:
-            cpfPaciente = descriptografar(tiraBarraEne(listaArqPaciente[4*cont]))
-            nomePaciente = descriptografar(tiraBarraEne(listaArqPaciente[4*cont+1]))
-            endPaciente = descriptografar(tiraBarraEne(listaArqPaciente[4*cont+2]))
-            senhaPaciente = descriptografar(tiraBarraEne(listaArqPaciente[4*cont+3]))
+            cpfPaciente = descriptografar(tiraBarraEne(listaArqPaciente[6*cont]))
+            nomePaciente = descriptografar(tiraBarraEne(listaArqPaciente[6*cont+1]))
+            endPaciente = descriptografar(tiraBarraEne(listaArqPaciente[6*cont+2]))
+            senhaPaciente = descriptografar(tiraBarraEne(listaArqPaciente[6*cont+3]))
+            dataCadastro = descriptografar(tiraBarraEne(listaArqPaciente[6*cont+4]))
+            dataMofificacao = descriptografar(tiraBarraEne(listaArqPaciente[6*cont+5]))
             cont+=1
-            tuplaPaciente = (nomePaciente, endPaciente, senhaPaciente)
+            tuplaPaciente = (nomePaciente, endPaciente, senhaPaciente, dataCadastro, dataModificacao)
             chavePaciente = cpfPaciente
             dicPaciente[chavePaciente] = tuplaPaciente
     print(listaArqPaciente)
@@ -170,7 +177,9 @@ def cdtMedico():
         espMedico = input("\nAgora, digite a área da sua especialização: ")
         codigoMedico = input("\nDigite o seu código de identificação: (lembre-se, o código de identificação serve para acessar seus dados no sistema)\n")
         senhaMedico = input("\nDigite sua senha: \n")
-        salvarMedico(nomeMedico, endMedico, espMedico, codigoMedico, senhaMedico)
+        dataCadastro = dataHora()
+        dataModificacao = "-"
+        salvarMedico(nomeMedico, endMedico, espMedico, codigoMedico, senhaMedico, dataCadastro, dataModificacao)
         escolhaLoginMedico()
         cont = False
 
@@ -193,8 +202,8 @@ def escolhaLoginMedico():
             print("\nOpção digitada inválida!")
 
 
-def salvarMedico(nomeMedico, endMedico, espMedico, codigoMedico, senhaMedico):
-    tuplaMedico = (nomeMedico, endMedico, espMedico, senhaMedico)
+def salvarMedico(nomeMedico, endMedico, espMedico, codigoMedico, senhaMedico, dataCadastro, dataModificacao):
+    tuplaMedico = (nomeMedico, endMedico, espMedico, senhaMedico, dataCadastro, dataModificacao)
     chaveMedico = codigoMedico
     dicMedico[chaveMedico] = tuplaMedico
     print(dicMedico)
@@ -215,6 +224,10 @@ def salvarArquivoMedico(dicMedico):
         arq.write('\n')
         arq.write(criptografar(str(listConteudo[cont][3])))
         arq.write('\n')
+        arq.write(criptografar(str(listConteudo[cont][4])))
+        arq.write('\n')
+        arq.write(criptografar(str(listConteudo[cont][5])))
+        arq.write('\n')
         cont+=1
     arq.close()
 
@@ -223,16 +236,18 @@ def carregarMedicos():
     dicMedico = {}
     with open('medicos.txt', 'r') as arq:
         listaArqMedico = arq.readlines()
-        qntMedicos = len(listaArqMedico)//5
+        qntMedicos = len(listaArqMedico)//7
         cont = 0
         while cont < qntMedicos:
-            codigoMedico = descriptografar(tiraBarraEne(listaArqMedico[5*cont]))
-            nomeMedico = descriptografar(tiraBarraEne(listaArqMedico[5*cont+1]))
-            endMedico = descriptografar(tiraBarraEne(listaArqMedico[5*cont+2]))
-            espMedico = descriptografar(tiraBarraEne(listaArqMedico[5*cont+3]))
-            senhaMedico = descriptografar(tiraBarraEne(listaArqMedico[5*cont+4]))
+            codigoMedico = descriptografar(tiraBarraEne(listaArqMedico[7*cont]))
+            nomeMedico = descriptografar(tiraBarraEne(listaArqMedico[7*cont+1]))
+            endMedico = descriptografar(tiraBarraEne(listaArqMedico[7*cont+2]))
+            espMedico = descriptografar(tiraBarraEne(listaArqMedico[7*cont+3]))
+            senhaMedico = descriptografar(tiraBarraEne(listaArqMedico[7*cont+4]))
+            dataCadastro = descriptografar(tiraBarraEne(listaArqMedico[7*cont+5]))
+            dataModificacao = descriptografar(tiraBarraEne(listaArqMedico[7*cont+6]))
             cont+=1
-            tuplaMedico = (nomeMedico, endMedico, espMedico, senhaMedico)
+            tuplaMedico = (nomeMedico, endMedico, espMedico, senhaMedico, dataCadastro, dataModificacao)
             chaveMedico = codigoMedico
             dicMedico[chaveMedico] = tuplaMedico
     print('arquivo',dicMedico)
@@ -330,6 +345,7 @@ def menuMedico(usuario, idLoginMed, senhaLoginMed):
         
 
 def atualizarDadosMedico(usuario, codigo, senhaMed):
+    dataCriacao = dicMedico[codigo][5]
     cont = True
     while cont:
         print("->"*20+f"\nOlá, {usuario}, digite as informações que você quer atualizar: ")
@@ -344,7 +360,8 @@ def atualizarDadosMedico(usuario, codigo, senhaMed):
             senhaRepetir = input("\nRepita a senha: ")
             if senhaAtualizar == senhaRepetir:
                 senhaMed = senhaAtualizar
-                tuplaAtualizarMedico = (nomeAtualizar, endAtualizar, espAtualizar, senhaMed)
+                dataModificacao = dataHora()
+                tuplaAtualizarMedico = (nomeAtualizar, endAtualizar, espAtualizar, senhaMed, dataCriacao, dataModificacao)
                 dicMedico[codigo] = tuplaAtualizarMedico
                 print(dicMedico[codigo])
                 print("\nInformações alteradas com sucesso!")
@@ -357,12 +374,35 @@ def atualizarDadosMedico(usuario, codigo, senhaMed):
                 print("\nSenhas não conferem.")
 
         elif op == 2:
-            tuplaAtualizarMedico = (nomeAtualizar, endAtualizar, espAtualizar, senhaMed)
+            dataModificacao = dataHora()
+            tuplaAtualizarMedico = (nomeAtualizar, endAtualizar, espAtualizar, senhaMed, dataCriacao, dataModificacao)
             dicMedico[codigo] = tuplaAtualizarMedico
+            pInicial()
             cont = False
 
         else:
             print("\nOpção incorreta. Tente novamente")
+
+
+def excluirMedico():
+    cont = True
+    while cont:
+        print("<-"*20+"\nÁrea para excluir conta."+"->"*20)
+        print("\nPara excluir sua conta, confirme seu login\n")
+        login = input("\nDigite seu login(código): ")
+        senhaLogin = input("\nDigite sua senha: ")
+
+        if login in dicMedico:
+            if dicPaciente[login][2] == senhaLogin:
+                dicMedico.pop(login)
+                print("\nUsuário removido com sucesso!")
+                cont = False
+
+            elif dicMedico[login][2] != senhaLogin:
+                print("\nSenha incorreta.")
+
+        elif not login in dicMedico:
+            print("\nLogin incorreto. Tente novamente")
 
 
 
@@ -466,6 +506,7 @@ def menuPaciente(usuario, idLogin, senhaLoginPaciente):
             
         
 def atualizarDadosPaciente(usuario, cpf, senhaLoginPaciente):
+    dataCriacao = dicPaciente[cpf][3]
     cont = True
     while cont:
         print("->" * 20 + f"\nOlá, {usuario}, digite as informações que você quer atualizar: ")
@@ -476,8 +517,9 @@ def atualizarDadosPaciente(usuario, cpf, senhaLoginPaciente):
             senhaAtualizar = input("\nDigite a nova senha: ")
             senhaRepetir = input("\nRepita a senha: ")
             if senhaAtualizar == senhaRepetir:
+                dataModificacao = dataHora()
                 senhaLoginPaciente = senhaAtualizar
-                tuplaAtualizarPaciente = (nomeAtualizar, endAtualizar, senhaLoginPaciente)
+                tuplaAtualizarPaciente = (nomeAtualizar, endAtualizar, senhaLoginPaciente, dataCriacao, dataModificacao)
                 dicPaciente[cpf] = tuplaAtualizarPaciente
                 print(dicPaciente[cpf])
                 print("\nInformações alteradas com sucesso!")
@@ -491,7 +533,8 @@ def atualizarDadosPaciente(usuario, cpf, senhaLoginPaciente):
                 print("\nSenhas não conferem.")
 
         elif op == 2:
-            tuplaAtualizarPaciente = (nomeAtualizar, endAtualizar, senhaLoginPaciente)
+            dataModificacao = dataHora()
+            tuplaAtualizarPaciente = (nomeAtualizar, endAtualizar, senhaLoginPaciente, dataCriacao, dataModificacao)
             dicPaciente[cpf] = tuplaAtualizarPaciente
             print(dicPaciente)
             pInicial()
