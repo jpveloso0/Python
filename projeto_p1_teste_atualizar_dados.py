@@ -49,6 +49,20 @@ def descriptografar(dado):
     return result
 
 
+def salvarLog(listaLog):
+    '''
+    Função para salvar as informações no arquivo do log.
+    '''
+    cont = 0
+    arq = open("log.txt", "a")
+    for i in listaLog:
+        arq.write(str(listaLog[cont]))
+        arq.write("\n")
+        cont += 1
+    arq.close()
+
+    
+
 
 def pInicial():
     '''
@@ -73,36 +87,43 @@ def pInicial():
         print("\n[ 6 ]- Sair")
         print("-="*25)
 
-        op = int(input("\nEscolha a opção desejada: "))
+        op = input("\nEscolha a opção desejada: ")
 
-        if op == 1:
+        if op == "1":
             cont = False
             cdtPaciente()
 
-        elif op == 2:
+        elif op == "2":
             cont = False
             cdtMedico()
 
-        elif op == 3:
+        elif op == "3":
             cont = False
             cnsPontos()
-                
+                    
 
-        elif op == 4:
+        elif op == "4":
             cont = False
             menuLoginPaciente()
-                
+                    
 
-        elif op == 5:
+        elif op == "5":
             cont = False
             menuLoginMedico()
-                
+                    
 
-        elif op == 6:
+        elif op == "6":
             salvarArquivoMedico(dicMedico)
             salvarArquivoPaciente(dicPaciente)
             salvarComentarioArquivoMedico(dicComentario)
             cont = False
+
+        elif not op:
+            print("\nCampo em branco. Escolha uma opção.")
+    
+        
+        else:
+            print("\nOpção digitada incorreta. Tente novamente")
             
 
 
@@ -111,15 +132,28 @@ def cdtPaciente():
     Função para salvar nas variáveis as informações digitadas sobre os pacientes.
     :return:
     '''
-    print("->" * 20 + "\nSeja bem vindo a área para cadastro de pacientes\n" + "<-" * 20)
-    nomePaciente = input("\nPrimeiramente, digite seu nome: ")
-    cpfPaciente = input("\nDigite seu cpf: ")
-    endPaciente = input("\nDigite seu endereço: ")
-    senhaPaciente = input("\nDigite sua senha para login: ")
-    dataCadastro = dataHora()
-    dataModificacao = "-"
-    salvarPaciente(nomePaciente, cpfPaciente, endPaciente, senhaPaciente, dataCadastro, dataModificacao)
-    escolhaLoginPaciente()
+    cont = True
+    while cont:
+        print("->" * 20 + "\nSeja bem vindo a área para cadastro de pacientes\n" + "<-" * 20)
+        nomePaciente = input("\nPrimeiramente, digite seu nome: ")
+        continua = True
+        while continua:
+            cpfPaciente = input("\nDigite seu cpf: ")
+            if cpfPaciente in dicPaciente:
+                print("\nCpf já cadastrado. Digite um cpf diferente.")
+
+            else:
+                continua = False
+
+            
+        endPaciente = input("\nDigite seu endereço: ")
+        senhaPaciente = input("\nDigite sua senha para login: ")
+        dataCadastro = dataHora()
+        dataModificacao = "-"
+        listaLog.append(f"O usuário {nomePaciente} fez um cadastro em {dataHora()}")
+        salvarPaciente(nomePaciente, cpfPaciente, endPaciente, senhaPaciente, dataCadastro, dataModificacao)
+        escolhaLoginPaciente()
+        cont = False
 
 def salvarPaciente(nomePaciente, cpfPaciente, endPaciente, senhaPaciente, dataCadastro, dataModificacao):
     '''
@@ -128,7 +162,6 @@ def salvarPaciente(nomePaciente, cpfPaciente, endPaciente, senhaPaciente, dataCa
     tuplaPaciente = (nomePaciente, endPaciente, senhaPaciente, dataCadastro, dataModificacao)
     chavePaciente = cpfPaciente
     dicPaciente[chavePaciente] = tuplaPaciente
-    print(dicPaciente)
 
 
 
@@ -177,8 +210,6 @@ def carregarPacientes():
             tuplaPaciente = (nomePaciente, endPaciente, senhaPaciente, dataCadastro, dataModificacao)
             chavePaciente = cpfPaciente
             dicPaciente[chavePaciente] = tuplaPaciente
-    print(listaArqPaciente)
-    print(dicPaciente)
     return dicPaciente
 
 
@@ -203,14 +234,25 @@ def cdtMedico():
     '''
     cont = True
     while cont:
+        print("-="*25)
         print("->"*20 + "\nSeja bem vindo (a) a área para cadastro de médicos\n" + "<-"*20)
+        print("-="*25)
         nomeMedico = input("\nPrimeiramente, digite seu nome: ")
         endMedico = input("\nDigite o seu endereço de trabalho(clínicas, hospitais e etc...)")
         espMedico = input("\nAgora, digite a área da sua especialização: ")
-        codigoMedico = input("\nDigite o seu código de identificação: (lembre-se, o código de identificação serve para acessar seus dados no sistema)\n")
+        continua = True
+        while continua:
+            codigoMedico = input("\nDigite o seu código de identificação: (lembre-se, o código de identificação serve para acessar seus dados no sistema)\n")
+            if codigoMedico in dicMedico:
+                print("\nCódigo já cadastrado no sistema. Digite um código diferente.")
+
+            else:
+                continua = False
+
         senhaMedico = input("\nDigite sua senha: \n")
         dataCadastro = dataHora()
         dataModificacao = "-"
+        listaLog.append(f"O usuário {nomeMedico} fez um cadastro em {dataHora()}")
         salvarMedico(nomeMedico, endMedico, espMedico, codigoMedico, senhaMedico, dataCadastro, dataModificacao)
         escolhaLoginMedico()
         cont = False
@@ -222,8 +264,10 @@ def escolhaLoginMedico():
     '''
     cont = True
     while cont:
+        print("-="*25)
         print("\nDeseja entrar no menu de login? (1- sim, 2- continuar no cadastro, 3- página inicial) \n")
         resp = int(input(""))
+        print("-="*25)
         if resp == 1:
             menuLoginMedico()
             cont = False
@@ -244,13 +288,12 @@ def salvarMedico(nomeMedico, endMedico, espMedico, codigoMedico, senhaMedico, da
     tuplaMedico = (nomeMedico, endMedico, espMedico, senhaMedico, dataCadastro, dataModificacao)
     chaveMedico = codigoMedico
     dicMedico[chaveMedico] = tuplaMedico
-    print(dicMedico)
+    
 
 def salvarArquivoMedico(dicMedico):
     '''
     Função para salvar as informações contidas nos dicionários no arquivo dos médicos.
     '''
-    print('salvar',dicMedico)
     arq = open('medicos.txt', 'w')
     listConteudo = list(dicMedico.values())
     cont = 0
@@ -294,7 +337,6 @@ def carregarMedicos():
             tuplaMedico = (nomeMedico, endMedico, espMedico, senhaMedico, dataCadastro, dataModificacao)
             chaveMedico = codigoMedico
             dicMedico[chaveMedico] = tuplaMedico
-    print('arquivo',dicMedico)
     return dicMedico 
 
 
@@ -309,8 +351,8 @@ def menuLoginMedico():
     while cont:
         print("->"*20+"\nBem vindo a área de login..."+"<-"*20)
         while opcao:
-            resp = int(input("\n1- Logar, 2- Sair: \n"))
-            if resp == 1:
+            resp = input("\n1- Logar, 2- Sair: \n")
+            if resp == "1":
                 idLoginMed = input("\nDigite seu login(o código): \n")
                 senhaLoginMed = input("\nDigite sua senha: \n")
                 if idLoginMed in dicMedico:
@@ -318,6 +360,7 @@ def menuLoginMedico():
                         usuario = dicMedico[idLoginMed][0]
                         print(f"\nBem vindo, {usuario}")
                         menuMedico(usuario, idLoginMed, senhaLoginMed)
+                        listaLog.append(f"O usuário {usuario} fez login em {dataHora()}")
                         cont = False
                         opcao = False
 
@@ -333,10 +376,12 @@ def menuLoginMedico():
                 else:
                     print("\nCódigo inválido. Tente novamente")
 
-            elif resp == 2:
+            elif resp == "2":
                 salvarArquivoMedico(dicMedico)
                 salvarArquivoPaciente(dicPaciente)
                 pInicial()
+                salvarLog(listaLog)
+                listaLog.append(f"Um usuário desconhecido saiu do login.")
                 opcao = False
                 cont = False
 
@@ -364,34 +409,40 @@ def menuMedico(usuario, idLoginMed, senhaLoginMed):
         print("-="*25)
         print("\n[ 5 ]- Página inicial")
         print("-="*25)
-        op = int(input("\nEscolha uma opção: \n"))
+        op = input("\nEscolha uma opção: \n")
         print("-="*25)
 
         if not op:
             print("\nUma opção deve ser digitada")
 
-        elif op == 1:
+        elif op == "1":
             atualizarDadosMedico(usuario, codigo, senhaMed)
             cont = False
 
-        elif op == 2:
+        elif op == "2":
             feed()
             cont = False
 
-        elif op == 3:
+        elif op == "3":
             excluirMedico()
             cont = False
 
-        elif op == 4:
+        elif op == "4":
             salvarArquivoMedico(dicMedico)
             salvarArquivoPaciente(dicPaciente)
             salvarComentarioArquivoMedico(dicComentario)
+            salvarLog(listaLog)
             cont = False
 
-        elif op == 5:
+        elif op == "5":
             cont = False
+            listaLog.append(f"O usuário {usuario} voltou para a página inicial em {dataHora()}")
             pInicial()
 
+        elif not op:
+            print("\nCampo digitado em branco. Escolha uma opção")
+        
+        
         else:
             print("\nOpção digitada incorreta. Tente novamente")
         
@@ -400,7 +451,7 @@ def atualizarDadosMedico(usuario, codigo, senhaMed):
     '''
     Função para atualizar os dados do médico.
     '''
-    dataCriacao = dicMedico[codigo][5]
+    dataCriacao = dicMedico[codigo][4]
     cont = True
     while cont:
         print("->"*20+f"\nOlá, {usuario}, digite as informações que você quer atualizar: ")
@@ -408,9 +459,9 @@ def atualizarDadosMedico(usuario, codigo, senhaMed):
         endAtualizar = input("\nNovo endereço: ")
         espAtualizar = input("\nNova especialização: ")
 
-        op = int(input("\nDeseja atualizar a senha? 1 - sim, 2- não \n"))
+        op = input("\nDeseja atualizar a senha? 1 - sim, 2- não \n")
 
-        if op == 1:
+        if op == "1":
             senhaAtualizar = input("\nDigite a nova senha: ")
             senhaRepetir = input("\nRepita a senha: ")
             if senhaAtualizar == senhaRepetir:
@@ -418,7 +469,7 @@ def atualizarDadosMedico(usuario, codigo, senhaMed):
                 dataModificacao = dataHora()
                 tuplaAtualizarMedico = (nomeAtualizar, endAtualizar, espAtualizar, senhaMed, dataCriacao, dataModificacao)
                 dicMedico[codigo] = tuplaAtualizarMedico
-                print(dicMedico[codigo])
+                listaLog.append(f"O usuário {usuario} atualizou seus dados em {dataHora()}")
                 print("\nInformações alteradas com sucesso!")
                 cont = False
 
@@ -428,7 +479,7 @@ def atualizarDadosMedico(usuario, codigo, senhaMed):
             else:
                 print("\nSenhas não conferem.")
 
-        elif op == 2:
+        elif op == "2":
             dataModificacao = dataHora()
             tuplaAtualizarMedico = (nomeAtualizar, endAtualizar, espAtualizar, senhaMed, dataCriacao, dataModificacao)
             dicMedico[codigo] = tuplaAtualizarMedico
@@ -452,8 +503,10 @@ def excluirMedico():
 
         for login in dicMedico:
             if dicMedico[login][3] == senhaLogin:
+                usuario = dicMedico[login][0]
                 dicMedico.pop(login)
                 print("\nUsuário removido com sucesso!")
+                listaLog.append(f"O usuário {usuario} excluiu sua conta do sistema em {dataHora()}")
                 menuLoginMedico()
                 cont = False
 
@@ -477,6 +530,7 @@ def feed():
         sleep(2)
         listaComentario = dicComentario
         print(listaComentario)
+        listaLog.append(f"Um usuário abriu o feed de comentários em {dataHora()}")                               
         resp = input("\nDeseja voltar ao menu(1- sim, 2- não)?  ")
         if resp == "1":
             menuLoginMedico()
@@ -497,12 +551,16 @@ def menuLoginPaciente():
     cont = True
     usuario = ''
     while cont:
+        print("-="*25)
         print("->"*20+"\nBem vindo a área de login..."+"<-"*20)
+        print("-="*25)
         opcao = True
         cont = False
         while opcao:
-            resp = int(input("\n1 - logar, 2- sair: \n"))
-            if resp == 1:
+            print("-="*25)
+            resp = input("\n1 - logar, 2- sair: \n")
+            print("-="*25)
+            if resp == "1":
             
                 idLogin = input("\nDigite seu login(CPF): \n")
                 senhaLoginPaciente = input("Digite sua senha: \n")
@@ -512,6 +570,7 @@ def menuLoginPaciente():
                         usuario = dicPaciente[idLogin][0]
                         print(f"\nBem vindo, {dicPaciente[idLogin][0]}")
                         menuPaciente(usuario, idLogin, senhaLoginPaciente)
+                        listaLog.append(f"O usuário {usuario} fez login em {dataHora()}")
                         opcao = False 
 
                     elif not senhaLogin:
@@ -526,7 +585,7 @@ def menuLoginPaciente():
                 else:
                     print("\nCpf inválido. Tente novamente!")
 
-            elif resp == 2:
+            elif resp == "2":
                 pInicial()
                 opcao = False
     return usuario
@@ -557,34 +616,36 @@ def menuPaciente(usuario, idLogin, senhaLoginPaciente):
         print("-="*25)
         print("\n[ 6 ]- Sair")
         print("-="*25)
-        op = int(input("\nEscolha uma opção: \n"))
+        op = input("\nEscolha uma opção: \n")
         print("-="*25)
 
         if not op:
             print("\nDigite uma opção, por favor")
 
-        elif op == 1:
+        elif op == "1":
             cont = False
             atualizarDadosPaciente(usuario, cpf, senhaLoginPaciente)
 
-        elif op == 2:
+        elif op == "2":
             cont = False
             pesquisarMedico()
 
-        elif op == 3:
+        elif op == "3":
             cont = False
             comentar(usuario)
 
-        elif op == 4:
+        elif op == "4":
             cont = False
             excluirPaciente()
 
-        elif op == 5:
+        elif op == "5":
             pInicial()
             cont = False
 
-        elif op == 6:
+        elif op == "6":
             salvarComentarioArquivoMedico(dicComentario)
+            salvarLog(listaLog)
+            listaLog.append(f"O usuário {usuario} fez logout em {dataHora()}")
             cont = False
 
         else:
@@ -601,8 +662,8 @@ def atualizarDadosPaciente(usuario, cpf, senhaLoginPaciente):
         print("->" * 20 + f"\nOlá, {usuario}, digite as informações que você quer atualizar: ")
         nomeAtualizar = input("\nNovo nome: ")
         endAtualizar = input("\nNovo endereço: ")
-        op = int(input("\nDeseja atualizar a senha? 1 - sim, 2- não \n"))
-        if op == 1:
+        op = input("\nDeseja atualizar a senha? 1 - sim, 2- não \n")
+        if op == "1":
             senhaAtualizar = input("\nDigite a nova senha: ")
             senhaRepetir = input("\nRepita a senha: ")
             if senhaAtualizar == senhaRepetir:
@@ -610,9 +671,9 @@ def atualizarDadosPaciente(usuario, cpf, senhaLoginPaciente):
                 senhaLoginPaciente = senhaAtualizar
                 tuplaAtualizarPaciente = (nomeAtualizar, endAtualizar, senhaLoginPaciente, dataCriacao, dataModificacao)
                 dicPaciente[cpf] = tuplaAtualizarPaciente
-                print(dicPaciente[cpf])
                 print("\nInformações alteradas com sucesso!")
-                menuPaciente()
+                listaLog.append(f"O usuário {usuario} atualizou os dados em {dataHora()}")
+                menuLoginPaciente()
                 cont = False
 
             elif not senhaAtualizar or not senhaRepetir:
@@ -621,11 +682,10 @@ def atualizarDadosPaciente(usuario, cpf, senhaLoginPaciente):
             else:
                 print("\nSenhas não conferem.")
 
-        elif op == 2:
+        elif op == "2":
             dataModificacao = dataHora()
             tuplaAtualizarPaciente = (nomeAtualizar, endAtualizar, senhaLoginPaciente, dataCriacao, dataModificacao)
             dicPaciente[cpf] = tuplaAtualizarPaciente
-            print(dicPaciente)
             pInicial()
             cont = False
 
@@ -645,6 +705,7 @@ def comentar(usuario):
 
         salvarComentarioMedico(codigoMedicoComentario, cidadeMedicoComentario, comentarioMedico)
         menuLoginPaciente()
+        listaLog = (f"O usuário {usuario} fez um comentário em {dataHora()}")
         cont = False
 
 
@@ -663,6 +724,7 @@ def excluirPaciente():
             if dicPaciente[login][2] == senhaLogin:
                 dicPaciente.pop(login)
                 print("\nUsuário removido com sucesso!")
+                listaLog.append(f"O usuário {usuario} excluiu sua conta do sistema em {dataHora()}")
                 menuLoginPaciente()
                 cont = False
 
@@ -688,11 +750,11 @@ def pesquisarMedico():
         nomePesquisar = input("\nDigite o nome do médico que está procurando: ")
         for codigo in dicMedico:
             if dicMedico[codigo][0] == nomePesquisar:
-                print("\nO médico {nomePesquisar} está cadastrado no sistema!")
+                print(f"\nO médico {nomePesquisar} está cadastrado no sistema!")
                 resp = input("\nDeseja visualizar as informações do médico cadastrado(1- sim, 2- não)? ")
                 if resp == "1":
-                    print(dicMedico[codigo])
                     menuLoginPaciente()
+                    listaLog.append(f"Um usuário pesquisou sobre um médico em {dataHora()}")
                     cont = False
 
                 elif resp == "2":
@@ -753,9 +815,11 @@ def carregarComentario():
 
         return dicComentario
 
-
+listaLog = []
 dicComentario = carregarComentario()
 dicMedico = carregarMedicos()   
 dicPaciente = carregarPacientes()
  
 pInicial()
+
+salvarLog(listaLog)
