@@ -1,4 +1,7 @@
 def tiraBarraEne(string):
+    '''
+    Função para tirar o \n quando for carregar as informações.
+    '''
     novaString = ''
     for caractere in string:
         if caractere != '\n':
@@ -7,6 +10,9 @@ def tiraBarraEne(string):
     return novaString
 
 def dataHora():
+    '''
+    Função para padronizar e salvar a data/hora em que as ações foram feitas.
+    '''
     from datetime import datetime
     dataHora = datetime.now()
     dataHora = dataHora.strftime("%d/%m/%y %H:%M")
@@ -15,7 +21,9 @@ def dataHora():
 
 
 def criptografar(dado):
-
+    '''
+    Função para criptografar os dados que são adicionados ao arquivo.
+    '''
     arq = open('chavePublica.txt', 'r')
     e = int(tiraBarraEne(arq.readline()))
     n = int(arq.readline())
@@ -27,7 +35,9 @@ def criptografar(dado):
     return resultado
 
 def descriptografar(dado):
-
+    '''
+    Função para descriptografar os dados, visando seu uso quando forem carregados do arquivo.
+    '''
     arq = open('chavePublica.txt', 'r')
     d = int(tiraBarraEne(arq.readline()))
     n = int(arq.readline())
@@ -41,7 +51,9 @@ def descriptografar(dado):
 
 
 def pInicial():
-    from sys import exit
+    '''
+    Função de menu inicial que serve para dar caminho aos outros menus.
+    '''
     cont = True
     while cont:
         print("-="*25)
@@ -89,11 +101,16 @@ def pInicial():
         elif op == 6:
             salvarArquivoMedico(dicMedico)
             salvarArquivoPaciente(dicPaciente)
+            salvarComentarioArquivoMedico(dicComentario)
             cont = False
             
 
 
 def cdtPaciente():
+    '''
+    Função para salvar nas variáveis as informações digitadas sobre os pacientes.
+    :return:
+    '''
     print("->" * 20 + "\nSeja bem vindo a área para cadastro de pacientes\n" + "<-" * 20)
     nomePaciente = input("\nPrimeiramente, digite seu nome: ")
     cpfPaciente = input("\nDigite seu cpf: ")
@@ -105,6 +122,9 @@ def cdtPaciente():
     escolhaLoginPaciente()
 
 def salvarPaciente(nomePaciente, cpfPaciente, endPaciente, senhaPaciente, dataCadastro, dataModificacao):
+    '''
+    Função para salvar os dados dos pacientes em dicionários.
+    '''
     tuplaPaciente = (nomePaciente, endPaciente, senhaPaciente, dataCadastro, dataModificacao)
     chavePaciente = cpfPaciente
     dicPaciente[chavePaciente] = tuplaPaciente
@@ -113,6 +133,9 @@ def salvarPaciente(nomePaciente, cpfPaciente, endPaciente, senhaPaciente, dataCa
 
 
 def salvarArquivoPaciente(dicPaciente):
+    '''
+    Função para salvar no arquivo as informações que estão contidas no dicionário dos pacientes.
+    '''
     arq = open('paciente.txt','w')
     listConteudo = list(dicPaciente.values())
     cont = 0
@@ -134,6 +157,9 @@ def salvarArquivoPaciente(dicPaciente):
 
 
 def carregarPacientes():
+    '''
+    Função para ler as informações dos pacientes contidas no arquivo.
+    '''
     dicPaciente = {}
     with open('paciente.txt', 'r') as arq:
         
@@ -146,7 +172,7 @@ def carregarPacientes():
             endPaciente = descriptografar(tiraBarraEne(listaArqPaciente[6*cont+2]))
             senhaPaciente = descriptografar(tiraBarraEne(listaArqPaciente[6*cont+3]))
             dataCadastro = descriptografar(tiraBarraEne(listaArqPaciente[6*cont+4]))
-            dataMofificacao = descriptografar(tiraBarraEne(listaArqPaciente[6*cont+5]))
+            dataModificacao = descriptografar(tiraBarraEne(listaArqPaciente[6*cont+5]))
             cont+=1
             tuplaPaciente = (nomePaciente, endPaciente, senhaPaciente, dataCadastro, dataModificacao)
             chavePaciente = cpfPaciente
@@ -157,6 +183,9 @@ def carregarPacientes():
 
 
 def escolhaLoginPaciente():
+    '''
+    Função para nortear o usuário após realizar um cadastro de paciente.
+    '''
     print("\nDeseja entrar no menu de login? (1- sim, 2- continuar no cadastro, 3- página inicial)")
     resp = int(input(""))
     if resp == 1:
@@ -169,6 +198,9 @@ def escolhaLoginPaciente():
         print("\nOpção digitada inválida!")
 
 def cdtMedico():
+    '''
+    Função para salvar nas variáveis as informações digitadas sobre os médicos.
+    '''
     cont = True
     while cont:
         print("->"*20 + "\nSeja bem vindo (a) a área para cadastro de médicos\n" + "<-"*20)
@@ -185,6 +217,9 @@ def cdtMedico():
 
 
 def escolhaLoginMedico():
+    '''
+    Função para nortear o usuário após realizar um cadastro de médico.
+    '''
     cont = True
     while cont:
         print("\nDeseja entrar no menu de login? (1- sim, 2- continuar no cadastro, 3- página inicial) \n")
@@ -203,12 +238,18 @@ def escolhaLoginMedico():
 
 
 def salvarMedico(nomeMedico, endMedico, espMedico, codigoMedico, senhaMedico, dataCadastro, dataModificacao):
+    '''
+    Função para adicionar as informações sobre os médicos em dicionários.
+    '''
     tuplaMedico = (nomeMedico, endMedico, espMedico, senhaMedico, dataCadastro, dataModificacao)
     chaveMedico = codigoMedico
     dicMedico[chaveMedico] = tuplaMedico
     print(dicMedico)
 
 def salvarArquivoMedico(dicMedico):
+    '''
+    Função para salvar as informações contidas nos dicionários no arquivo dos médicos.
+    '''
     print('salvar',dicMedico)
     arq = open('medicos.txt', 'w')
     listConteudo = list(dicMedico.values())
@@ -233,6 +274,9 @@ def salvarArquivoMedico(dicMedico):
 
 
 def carregarMedicos():
+    '''
+    Função para ler as informações contidas no arquivo dos médicos.
+    '''
     dicMedico = {}
     with open('medicos.txt', 'r') as arq:
         listaArqMedico = arq.readlines()
@@ -256,6 +300,9 @@ def carregarMedicos():
 
 
 def menuLoginMedico():
+    '''
+    Função que serve de menu para o médico fazer login.
+    '''
     cont = True
     opcao = True
     usuario = ''
@@ -289,6 +336,7 @@ def menuLoginMedico():
             elif resp == 2:
                 salvarArquivoMedico(dicMedico)
                 salvarArquivoPaciente(dicPaciente)
+                pInicial()
                 opcao = False
                 cont = False
 
@@ -296,6 +344,9 @@ def menuLoginMedico():
 
 
 def menuMedico(usuario, idLoginMed, senhaLoginMed):
+    '''
+    Função que serve de menu para o médico escolher as ações que deseja tomar.
+    '''
     codigo = idLoginMed
     senhaMed = senhaLoginMed
     cont = True
@@ -334,6 +385,7 @@ def menuMedico(usuario, idLoginMed, senhaLoginMed):
         elif op == 4:
             salvarArquivoMedico(dicMedico)
             salvarArquivoPaciente(dicPaciente)
+            salvarComentarioArquivoMedico(dicComentario)
             cont = False
 
         elif op == 5:
@@ -345,6 +397,9 @@ def menuMedico(usuario, idLoginMed, senhaLoginMed):
         
 
 def atualizarDadosMedico(usuario, codigo, senhaMed):
+    '''
+    Função para atualizar os dados do médico.
+    '''
     dataCriacao = dicMedico[codigo][5]
     cont = True
     while cont:
@@ -385,6 +440,9 @@ def atualizarDadosMedico(usuario, codigo, senhaMed):
 
 
 def excluirMedico():
+    '''
+    Função para excluir o cadastro de um médico.
+    '''
     cont = True
     while cont:
         print("<-"*20+"\nÁrea para excluir conta."+"->"*20)
@@ -392,17 +450,37 @@ def excluirMedico():
         login = input("\nDigite seu login(código): ")
         senhaLogin = input("\nDigite sua senha: ")
 
-        if login in dicMedico:
-            if dicPaciente[login][2] == senhaLogin:
+        for login in dicMedico:
+            if dicMedico[login][3] == senhaLogin:
                 dicMedico.pop(login)
                 print("\nUsuário removido com sucesso!")
+                menuLoginMedico()
                 cont = False
 
             elif dicMedico[login][2] != senhaLogin:
                 print("\nSenha incorreta.")
 
-        elif not login in dicMedico:
-            print("\nLogin incorreto. Tente novamente")
+            else:
+                print("\nLogin não cadastrado. Tente novamente")
+
+
+def feed():
+    '''
+    Função usada para mostrar o feed de comentários sobre os médicos.
+    '''
+    from time import sleep
+    cont = True
+    while cont:
+        print("-="*20)
+        print("\n... FEED DE COMENTÁRIOS ...")
+        print("-="*20)
+        sleep(2)
+        listaComentario = dicComentario
+        print(listaComentario)
+        resp = input("\nDeseja voltar ao menu(1- sim, 2- não)?  ")
+        if resp == "1":
+            menuLoginMedico()
+            cont = False
 
 
 
@@ -413,6 +491,9 @@ def cnsPontos ():
 
 
 def menuLoginPaciente():
+    '''
+    Função que serve de menu para o paciente fazer login.
+    '''
     cont = True
     usuario = ''
     while cont:
@@ -446,6 +527,7 @@ def menuLoginPaciente():
                     print("\nCpf inválido. Tente novamente!")
 
             elif resp == 2:
+                pInicial()
                 opcao = False
     return usuario
 
@@ -454,6 +536,9 @@ def menuLoginPaciente():
 
 
 def menuPaciente(usuario, idLogin, senhaLoginPaciente):
+    '''
+    Função que serve de menu para o paciente escolher as ações que deseja tomar.
+    '''
     cpf = idLogin
     cont = True
     while cont:
@@ -488,7 +573,7 @@ def menuPaciente(usuario, idLogin, senhaLoginPaciente):
 
         elif op == 3:
             cont = False
-            comentar()
+            comentar(usuario)
 
         elif op == 4:
             cont = False
@@ -499,6 +584,7 @@ def menuPaciente(usuario, idLogin, senhaLoginPaciente):
             cont = False
 
         elif op == 6:
+            salvarComentarioArquivoMedico(dicComentario)
             cont = False
 
         else:
@@ -506,6 +592,9 @@ def menuPaciente(usuario, idLogin, senhaLoginPaciente):
             
         
 def atualizarDadosPaciente(usuario, cpf, senhaLoginPaciente):
+    '''
+    Função para atualizar as informações do paciente.
+    '''
     dataCriacao = dicPaciente[cpf][3]
     cont = True
     while cont:
@@ -545,6 +634,9 @@ def atualizarDadosPaciente(usuario, cpf, senhaLoginPaciente):
 
 
 def comentar(usuario):
+    '''
+    Função para escrever um comentário sobre algum médico ou atendimento.
+    '''
     cont = True
     while cont:
         codigoMedicoComentario = input("\nDigite o nome do médico sobre o qual você deseja deixar um comentário: ")
@@ -552,10 +644,14 @@ def comentar(usuario):
         comentarioMedico = input("\nDigite o seu comentário: ")
 
         salvarComentarioMedico(codigoMedicoComentario, cidadeMedicoComentario, comentarioMedico)
+        menuLoginPaciente()
         cont = False
 
 
 def excluirPaciente():
+    '''
+    Função para excluir o cadastro de um paciente.
+    '''
     cont = True
     while cont:
         print("<-"*20+"\nÁrea para excluir conta."+"->"*20)
@@ -567,6 +663,7 @@ def excluirPaciente():
             if dicPaciente[login][2] == senhaLogin:
                 dicPaciente.pop(login)
                 print("\nUsuário removido com sucesso!")
+                menuLoginPaciente()
                 cont = False
 
             elif dicPaciente[login][2] != senhaLogin:
@@ -582,41 +679,47 @@ def excluirPaciente():
 
 
 def pesquisarMedico():
+    '''
+    Função para pesquisar as informações de determinado médico.
+    '''
     cont = True
     listaPesquisarMedico = list(dicMedico.values())
     while cont:
         nomePesquisar = input("\nDigite o nome do médico que está procurando: ")
-        if nomePesquisar in dicMedico:
-            print(f"\nO médico {nomePesquisar} está cadastrado no sistema")
-            resp = int(input("\nDeseja visualizar as informações do médico cadastrado(1- sim, 2- não)? "))
-            if resp == 1:
-                print(listaPesquisarMedico[nomePesquisar])
-                op = input("\nDeseja voltar para o menu(1- Sim, 2- Não)? ")
-                if op == 1:
+        for codigo in dicMedico:
+            if dicMedico[codigo][0] == nomePesquisar:
+                print("\nO médico {nomePesquisar} está cadastrado no sistema!")
+                resp = input("\nDeseja visualizar as informações do médico cadastrado(1- sim, 2- não)? ")
+                if resp == "1":
+                    print(dicMedico[codigo])
+                    menuLoginPaciente()
                     cont = False
 
-                elif op == 2:
-                    pass
+                elif resp == "2":
+                    cont = False
 
                 else:
-                    print("\nOpção digitada incorreta. Tente novamente")
+                    print("\nOpção digitada incorreta!")
 
-            elif resp == 2:
+            else:
+                print("\nMédico não cadastrado no sistema!")
                 cont = False
-
-        elif not nomePesquisar in dicMedico:
-            print("\nNome do médico digitado não está cadastrado no sistema.")
-
 
 
 
 def salvarComentarioMedico(codigo, cidade, comentario):
+    '''
+    Função para salvar os comentários em um dicionário.
+    '''
     tuplaComentarioMedico = (cidade, comentario)
     dicComentario[codigo] = tuplaComentarioMedico
 
 
 def salvarComentarioArquivoMedico(dicComentario):
-    arq = open('comentario.txt', 'a')
+    '''
+    Função para salvar as informações do dicionário no arquivo de comentários.
+    '''
+    arq = open('comentario.txt', 'w')
     listaConteudo = list(dicComentario.values())
     cont = 0
     for codigo in dicComentario:
@@ -632,6 +735,9 @@ def salvarComentarioArquivoMedico(dicComentario):
 
 
 def carregarComentario():
+    '''
+    Função para ler os comentários salvos no arquivo.
+    '''
     dicComentario = {}
     with open('comentario.txt','r') as arq:
         listaComentario = arq.readlines()
@@ -648,7 +754,7 @@ def carregarComentario():
         return dicComentario
 
 
-dicComentario = {}
+dicComentario = carregarComentario()
 dicMedico = carregarMedicos()   
 dicPaciente = carregarPacientes()
  
